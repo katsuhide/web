@@ -7,24 +7,24 @@
     </head>
     <body>
         <div class="container" style="padding-top: 40px">
-           <input type="text" class="span3" data-provide="typeahead" data-items="3" data-source='["渋谷", "谷尾", "谷口", "谷田", "田口"]' /> 
-          <button class="btn"><i class="icon-search"></i> Action</button>
-          <button class="btn"><i class="icon-remove"></i> Clear</button>
+            <input type="text" id="word" class="span3" data-provide="typeahead" data-items="3" data-source='["渋谷", "谷尾", "谷口", "谷田", "田口"]' />
+            <button class="btn">
+                <i class="icon-search"></i> Action
+            </button>
+            <button class="btn" id="clear_btn">
+                <i class="icon-remove"></i> Clear
+            </button>
             <img src="image/apple.jpg" class="img-polaroid">
-       <div>
-       </div> 
-        
-       <div>
-           
-       </div> 
-       
+        </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script>
             $(function() {
-                $('a[rel=tooltip]').tooltip();
-                $('a[rel=popover]').popover();
-            })
+                $('#clear_btn').click(function() {
+                    $('#word').val("");
+                });
+            });
+
         </script>
     </body>
 </html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>English Words Captures</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet" />
+        <script src="http://www.google.com/jsapi" type="text/javascript"></script>
+    </head>
+    <body>
+        <div class="container" style="padding-top: 40px">
+            <input type="text" id="word" class="span3" data-provide="typeahead" data-items="3" data-source='["渋谷", "谷尾", "谷口", "谷田", "田口"]' />
+            <button class="btn" id="search_btn">
+                <i class="icon-search"></i> Action
+            </button>
+            <button class="btn" id="clear_btn">
+                <i class="icon-remove"></i> Clear
+            </button>
+            <div id="content"></div>
+            <!-- google logo -->
+            <div id="branding"></div>
+            <!-- google logo -->
+            <div id="google_logo"></div>
+            <!-- Search Result Image Area -->
+            <div id="search_result"></div>
+            <!-- Search Result Pages Area -->
+            <div id="search_pages"></div>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+            <script src="js/bootstrap.min.js"></script>
+            <script>
+                google.load('search', '1');
+
+                var imageSearch;
+
+                function addPaginationLinks() {
+
+                    // To paginate search results, use the cursor function.
+                    var cursor = imageSearch.cursor;
+                    var curPage = cursor.currentPageIndex;
+                    // check what page the app is on
+                    var pagesDiv = document.createElement('div');
+                    for(var i = 0; i < cursor.pages.length; i++) {
+                        var page = cursor.pages[i];
+                        if(curPage == i) {
+
+                            // If we are on the current page, then don't make a link.
+                            var label = document.createTextNode(' ' + page.label + ' ');
+                            pagesDiv.appendChild(label);
+                        } else {
+
+                            // Create links to other pages using gotoPage() on the searcher.
+                            var link = document.createElement('a');
+                            // link.href = "/image-search/v1/javascript:imageSearch.gotoPage(" + i + ');';
+                            link.href = "javascript:imageSearch.gotoPage(" + i + ');';
+                            link.innerHTML = page.label;
+                            link.style.marginRight = '2px';
+                            pagesDiv.appendChild(link);
+                        }
+                    }
+
+                    var contentDiv = document.getElementById('content');
+                    contentDiv.appendChild(pagesDiv);
+                }
+
+                function searchComplete() {
+
+                    // Check that we got results
+                    if(imageSearch.results && imageSearch.results.length > 0) {
+
+                        // Grab our content div, clear it.
+                        var contentDiv = document.getElementById('content');
+                        contentDiv.innerHTML = '';
+
+                        // Loop through our results, printing them to the page.
+                        var results = imageSearch.results;
+                        for(var i = 0; i < results.length; i++) {
+                            // For each result write it's title and image to the screen
+                            var result = results[i];
+                            var imgContainer = document.createElement('div');
+                            var title = document.createElement('div');
+
+                            // We use titleNoFormatting so that no HTML tags are left in the
+                            // title
+                            title.innerHTML = result.titleNoFormatting;
+                            var newImg = document.createElement('img');
+
+                            // There is also a result.url property which has the escaped version
+                            // newImg.src = "/image-search/v1/result.tbUrl;"
+                            newImg.src = result.tbUrl;
+                            imgContainer.appendChild(title);
+                            imgContainer.appendChild(newImg);
+
+                            // Put our title + image in the content
+                            contentDiv.appendChild(imgContainer);
+                        }
+
+                        // Now add links to additional pages of search results.
+                        addPaginationLinks(imageSearch);
+                    }
+                }
+
+                function OnLoad(word) {
+
+                    // Create an Image Search instance.
+                    imageSearch = new google.search.ImageSearch();
+
+                    // Set searchComplete as the callback function when a search is
+                    // complete.  The imageSearch object will have results in it.
+                    imageSearch.setSearchCompleteCallback(this, searchComplete, null);
+
+                    // Find me a beautiful car.
+                    imageSearch.execute(word);
+
+                    // Include the required Google branding
+                    google.search.Search.getBranding('branding');
+                }
+
+
+                // google.setOnLoadCallback(OnLoad);
+
+                $(function() {
+
+                    // test
+                    $('#word').val("sky");
+
+                    // click the search button
+                    $('#search_btn').click(function() {
+                        console.log("hoge");
+                        OnLoad($('#word').val());
+                        // search();
+                    });
+                    // // search
+                    // function search() {
+                    // console.log('hige');
+                    // google.search.Search.getBranding(document.getElementById("google_logo"));
+                    // // var searchControl = new google.search.SearchControl();
+                    // // var searcher = new google.search.ImageSearch();
+                    // // searchControl.addSearcher(searcher);
+                    // // searchControl.draw(document.getElementById("search_control"));
+                    // // searchControl.execute($('#word').val());
+                    // var searcher = new google.search.ImageSearch();
+                    // searcher.setSearchCompleteCallback(searcher, searchComplete);
+                    // searcher.execute($('#word').val());
+                    // }
+                    //
+                    // // search complete
+                    // function searchComplete() {
+                    // showSearchResults(this.results, document.getElementById('search_result'));
+                    // showSearchPages(this.cursor, document.getElementById('search_pages'));
+                    // }
+                    //
+                    // // show search results
+                    // function showSearchResults(searchResults, domElement) {
+                    // if(searchResults && searchResults.length > 0) {
+                    // domElement.innerHTML = '';
+                    // for(var i = 0; i < searchResults.length; i++) {
+                    // var result = searchResults[i];
+                    // var node = result.html.cloneNode(true);
+                    // domElement.appendChild(node);
+                    // }
+                    // }
+                    // }
+                    //
+                    // // show search pages
+                    // function showSearchPages(searchCursor, domElement) {
+                    // var currentPageIndex = searchCursor.currentPageIndex;
+                    // domElement.innerHTML = '';
+                    // for(var i = 0; i < searchCursor.pages.length; i++) {
+                    // var page = searchCursor.pages[i];
+                    // if(currentPageIndex == i) {
+                    // var label = document.createTextNode(' ' + page.label + ' ');
+                    // domElement.appendChild(label);
+                    // } else {
+                    // var link = document.createElement('a');
+                    // link.href = 'javascript:imageSearch.gotoPage(' + i + ');';
+                    // link.innerHTML = page.label;
+                    // link.style.marginRight = '2px';
+                    // domElement.appendChild(link);
+                    // }
+                    // }
+                    // }
+
+                    // click the clear button
+                    $('#clear_btn').click(function() {
+                        $('#word').val("");
+                    });
+                });
+
+            </script>
+    </body>
+</html>

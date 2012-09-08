@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Google AJAX Search API - SearchControlを使わずに検索結果を表示</title>
+        <style type="text/css">
+            .gs-watermark {
+                display: none;
+            }
+</style>
+        <script src="http://www.google.com/jsapi" type="text/javascript"></script>
+        <script type="text/javascript">
+            google.load('search', '1');
+
+            google.setOnLoadCallback(initialize);
+
+            function initialize() {
+                google.search.Search.getBranding(document.getElementById("branding"));
+                var searcher = new google.search.ImageSearch();
+                // searcher.setSearchCompleteCallback(searcher, searchComplete, ["abc", "def"]);
+                searcher.setSearchCompleteCallback(searcher, searchComplete);
+                searcher.execute("ゼリーフライ");
+            }
+
+            function searchComplete(a, b) {
+                // alert(a);
+                // alert(b);
+                showSearchResults(this.results, document.getElementById('searchResults'));
+                showSearchPages(this.cursor, document.getElementById('searchPages'));
+            }
+
+            // 検索結果を表示
+            function showSearchResults(searchResults, domElement) {
+                if(searchResults && searchResults.length > 0) {
+                    domElement.innerHTML = '';
+                    for(var i = 0; i < searchResults.length; i++) {
+                        var result = searchResults[i];
+                        var node = result.html.cloneNode(true);
+                        domElement.appendChild(node);
+                    }
+                }
+            }
+
+            // 検索結果のページを表示
+            function showSearchPages(searchCursor, domElement) {
+                var currentPageIndex = searchCursor.currentPageIndex;
+                domElement.innerHTML = '';
+                for(var i = 0; i < searchCursor.pages.length; i++) {
+                    var page = searchCursor.pages[i];
+                    if(currentPageIndex == i) {
+                        var label = document.createTextNode(' ' + page.label + ' ');
+                        domElement.appendChild(label);
+                    } else {
+                        var link = document.createElement('a');
+                        link.href = 'javascript:imageSearch.gotoPage(' + i + ');';
+                        link.innerHTML = page.label;
+                        link.style.marginRight = '2px';
+                        domElement.appendChild(link);
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Google AJAX Search API</h1>
+        <h2>SearchControlを使わずに検索結果を表示</h2>
+        <hr/>
+        <div id="branding">Loading...</div>
+        <div id="searchResults">
+            Loading...
+        </div>
+        <div id="searchPages">
+            Loading...
+        </div>
+    </body>
+</html>
+​           
